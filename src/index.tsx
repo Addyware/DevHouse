@@ -1,8 +1,7 @@
-import { HomeController, PostController, AuthController } from "./areas";
-import { MockAuthService, MockPostsService } from "./areas";
+import 'dotenv/config';
+import { AuthController, HomeController, MockAuthService, MockPostsService, PostController } from "./areas";
 import { App } from "./server";
 
-// localhost:3000/auth/login
 const app = new App([
   new HomeController(),
   new AuthController(new MockAuthService()),

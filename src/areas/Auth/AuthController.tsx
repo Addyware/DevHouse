@@ -8,9 +8,9 @@ import { IAuthService, IController } from "../../shared/interfaces";
 import { Layout } from "../../shared/Layout";
 import { Login, Register } from "./views";
 
+import { getCookie, setCookie } from "hono/cookie";
 import { Header } from "../Posts/views/Header";
 import { Profile } from "./views/Profile";
-import { setCookie, getCookie } from "hono/cookie";
 
 export class AuthController extends BaseController implements IController {
   public readonly path: string = "/auth";
@@ -81,13 +81,22 @@ export class AuthController extends BaseController implements IController {
   );
 
   private loginUser = this.factory.createHandlers(
-    validate("form", UserDTO),
+    validate("form", UserDTO, (result, c) => {
+      if (!result.success) {
+        const errorMessage = result.error.errors?.[0].message
+          return c.render(
+            <Layout>
+              <Login errorMessage={errorMessage}/>
+            </Layout>
+          )
+      }
+    }),
     async (c) => {
       try {
         const validatedUser = c.req.valid("form");
         const foundUser = await this._authService.loginUser(validatedUser);
         const sessionId = randomUUID(); // Generate unique session ID
-        _sessionStore.set(sessionId, foundUser.email);
+        await _sessionStore.set(sessionId, foundUser.email);
         setCookie(c, "session", sessionId, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
@@ -113,7 +122,7 @@ export class AuthController extends BaseController implements IController {
   private logoutUser = this.factory.createHandlers(async (c) => {
     const sessionId = getCookie(c, "session");
     if (sessionId) {
-      _sessionStore.delete(sessionId); // Remove session from memory
+      await _sessionStore.delete(sessionId); // Remove session from memory
     }
 
     // Clear the session cookie
