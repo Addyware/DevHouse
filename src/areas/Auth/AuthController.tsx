@@ -12,11 +12,11 @@ import { Profile } from "./views/Profile";
 import { Header } from "../Posts/views/Header";
 
 export class AuthController extends BaseController implements IController {
-  public readonly path: string = "/auth";
+  // public readonly path: string = "/auth";
   private _authService: IAuthService;
 
   constructor(service: IAuthService) {
-    super();
+    super("/auth");
     this._authService = service;
     this.initializeRoutes();
   }
@@ -28,14 +28,22 @@ export class AuthController extends BaseController implements IController {
       forwardAuthMiddleware,
       ...this.showRegisterPage
     );
-    this.router.post(`${this.path}/register`, ...this.registerUser);
+    this.router.post(
+      `${this.path}/register`,
+      forwardAuthMiddleware,
+       ...this.registerUser);
+
     // Login Routes
     this.router.get(
       `${this.path}/login`,
       forwardAuthMiddleware,
       ...this.showLoginPage
     );
-    this.router.post(`${this.path}/login`, ...this.loginUser);
+    this.router.post(
+      `${this.path}/login`,
+      forwardAuthMiddleware,
+       ...this.loginUser);
+
     this.router.get(`${this.path}/logout`, ...this.logoutUser);
     this.router.get(
       `${this.path}/profile`,
@@ -52,7 +60,7 @@ export class AuthController extends BaseController implements IController {
   private showRegisterPage = this.factory.createHandlers((c) =>
     c.html(
       <Layout>
-        <Register />
+        <Register error="" />
       </Layout>
     )
   );
@@ -61,11 +69,16 @@ export class AuthController extends BaseController implements IController {
     validate("form", UserDTO),
     async (c) => {
       const validatedUser = c.req.valid("form");
-      const createdUser = await this._authService.createUser(validatedUser);
-      if (!createdUser) return c.redirect("/auth/register");
-      return c.redirect("/auth/login");
+
+      try {
+        const newUser = await this._authService.createUser(validatedUser);
+        return c.redirect("/auth/login");
+      } catch (error){
+        throw new Error()
+      }
     }
   );
+  
   /*
    *********************
    *   Login Routes    *
@@ -83,17 +96,28 @@ export class AuthController extends BaseController implements IController {
     validate("form", UserDTO),
     async (c) => {
       const validatedUser = c.req.valid("form");
-      const foundUser = await this._authService.loginUser(validatedUser);
-      const sessionId = randomUUID(); // Generate unique session ID
-      _sessionStore.set(sessionId, foundUser.email);
-      setCookie(c, "session", sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 30 * 60, // 30min
-        path: "/",
-      });
+      
+      try {
+        const foundUser = await this._authService.loginUser(validatedUser);
+  
+        const sessionId = randomUUID(); // Generate unique session ID
+        _sessionStore.set(sessionId, foundUser.email);
+        setCookie(c, "session", sessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 30 * 60, // 30min
+          path: "/",
+        });
       return c.redirect("/");
+    } catch (error) {
+      console.error("Login Error:", error);
+      return c.html(
+        <Layout>
+          <Login />
+        </Layout>
+      );
     }
+  }
   );
 
   private logoutUser = this.factory.createHandlers(async (c) => {

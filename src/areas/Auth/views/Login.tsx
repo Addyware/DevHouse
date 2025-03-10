@@ -1,4 +1,4 @@
-export function Login() {
+export function Login({error}: {error?: string}) {
   return (
     <div class="bg-white font-family-karla h-screen">
       <div class="w-full flex flex-wrap">

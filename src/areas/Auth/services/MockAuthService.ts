@@ -3,6 +3,10 @@ import { IUser } from "../../../shared/dtos";
 import { IAuthService } from "../../../shared/interfaces";
 
 export class MockAuthService implements IAuthService {
+  async findUserByEmail(email: string): Promise<IUser | undefined> {
+    return db.find((user)=> user.email === email)
+  }
+
   private async findUserByEmailAndPassword(
     email: string,
     password: string

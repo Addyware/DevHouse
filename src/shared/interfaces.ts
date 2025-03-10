@@ -7,6 +7,7 @@ export interface IController {
 }
 
 export interface IAuthService {
+  findUserByEmail(email: string): Promise<IUser | undefined>;
   createUser(user: IUser): Promise<IUser>;
   loginUser(user: IUser): Promise<IUser>;
 }

@@ -1,4 +1,4 @@
-export function Register() {
+export function Register({ error }:{error: string}) {
   return (
     <div class="bg-white font-family-karla h-screen">
       <div class="w-full flex flex-wrap">
@@ -11,6 +11,13 @@ export function Register() {
 
           <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
             <p class="text-center text-3xl">Register</p>
+            
+            {error && (
+              <p className="text-red-600 text-center mt-2 font-semibold">
+                {error}
+              </p>
+            )}
+
             <form
               class="flex flex-col pt-3 md:pt-8"
               method="post"

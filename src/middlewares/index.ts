@@ -3,12 +3,21 @@ import { StatusCode } from "hono/utils/http-status";
 import { _sessionStore } from "../database/sessionDB";
 import { getCookie } from "hono/cookie";
 
+// export const forwardAuthMiddleware = async (c: Context, next: Next) => {
+//   const sessionId = getCookie(c, "session");
+//   if (!sessionId || !_sessionStore.has(sessionId)) {
+//     return await next();
+//   }
+//   return c.redirect("/posts");
+// };
 export const forwardAuthMiddleware = async (c: Context, next: Next) => {
   const sessionId = getCookie(c, "session");
-  if (!sessionId || !_sessionStore.has(sessionId)) {
-    return await next();
+  if (sessionId && _sessionStore.has(sessionId)) {
+    // User is already logged in, redirect them to the posts page
+    return c.redirect("/posts");
   }
-  return c.redirect("/posts");
+  // User is not logged in, allow them to proceed
+  await next();
 };
 
 export const authMiddleware = async (c: Context, next: Next) => {
