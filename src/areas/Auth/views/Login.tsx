@@ -15,7 +15,7 @@ export function Login(props: Props) {
 
           <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
             <p class="text-center text-3xl">Welcome back.</p>
-            <p class="text-center text-red-500/60">{props.errorMessage}</p>
+            <p class="text-center text-red-600">{props.errorMessage}</p>
             <form
               class="flex flex-col pt-3 md:pt-8"
               method="post"
