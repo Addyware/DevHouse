@@ -1,15 +1,16 @@
-import { Layout } from "../../shared/Layout";
-import { Login, Register } from "./views";
-import { IController, IAuthService } from "../../shared/interfaces";
-import { BaseController } from "../../shared/BaseController";
 import { zValidator as validate } from "@hono/zod-validator";
-import { UserDTO } from "../../shared/dtos";
 import { randomUUID } from "node:crypto";
-import { getCookie, setCookie } from "hono/cookie";
 import { _sessionStore } from "../../database/sessionDB";
 import { authMiddleware, forwardAuthMiddleware } from "../../middlewares";
-import { Profile } from "./views/Profile";
+import { BaseController } from "../../shared/BaseController";
+import { UserDTO } from "../../shared/dtos";
+import { IAuthService, IController } from "../../shared/interfaces";
+import { Layout } from "../../shared/Layout";
+import { Login, Register } from "./views";
+
+import { getCookie, setCookie } from "hono/cookie";
 import { Header } from "../Posts/views/Header";
+import { Profile } from "./views/Profile";
 
 export class AuthController extends BaseController implements IController {
   // public readonly path: string = "/auth";
@@ -93,8 +94,18 @@ export class AuthController extends BaseController implements IController {
   );
 
   private loginUser = this.factory.createHandlers(
-    validate("form", UserDTO),
+    validate("form", UserDTO, (result, c) => {
+      if (!result.success) {
+        const errorMessage = result.error.errors?.[0].message
+          return c.render(
+            <Layout>
+              <Login errorMessage={errorMessage}/>
+            </Layout>
+          )
+      }
+    }),
     async (c) => {
+<<<<<<< HEAD
       const validatedUser = c.req.valid("form");
       
       try {
@@ -102,12 +113,20 @@ export class AuthController extends BaseController implements IController {
   
         const sessionId = randomUUID(); // Generate unique session ID
         _sessionStore.set(sessionId, foundUser.email);
+=======
+      try {
+        const validatedUser = c.req.valid("form");
+        const foundUser = await this._authService.loginUser(validatedUser);
+        const sessionId = randomUUID(); // Generate unique session ID
+        await _sessionStore.set(sessionId, foundUser.email);
+>>>>>>> login-error
         setCookie(c, "session", sessionId, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           maxAge: 30 * 60, // 30min
           path: "/",
         });
+<<<<<<< HEAD
       return c.redirect("/");
     } catch (error) {
       console.error("Login Error:", error);
@@ -116,6 +135,21 @@ export class AuthController extends BaseController implements IController {
           <Login />
         </Layout>
       );
+=======
+        return c.redirect("/");
+      } catch (err) {
+        if(err instanceof Error && err.message === "User not found"){
+          const errorMessage = "Invalid Login Credentials. Please try again"
+          return c.render(
+            <Layout>
+              <Login errorMessage={errorMessage}/>
+            </Layout>
+          )
+        } else {
+          throw err
+        }
+      }
+>>>>>>> login-error
     }
   }
   );
@@ -123,7 +157,7 @@ export class AuthController extends BaseController implements IController {
   private logoutUser = this.factory.createHandlers(async (c) => {
     const sessionId = getCookie(c, "session");
     if (sessionId) {
-      _sessionStore.delete(sessionId); // Remove session from memory
+      await _sessionStore.delete(sessionId); // Remove session from memory
     }
 
     // Clear the session cookie

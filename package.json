@@ -12,8 +12,13 @@
     "@nestjs/core": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
     "@tailwindcss/vite": "^4.0.0-beta.8",
+    "dotenv": "^16.4.7",
     "hono": "^4.5.10",
+<<<<<<< HEAD
     "ioredis": "^5.5.0",
+=======
+    "ioredis": "^5.6.0",
+>>>>>>> login-error
     "tailwindcss": "^4.0.0-beta.8",
     "zod": "^3.24.2"
   },
