@@ -29,6 +29,7 @@ export class AuthController extends BaseController implements IController {
       ...this.showRegisterPage
     );
     this.router.post(`${this.path}/register`, ...this.registerUser);
+
     // Login Routes
     this.router.get(
       `${this.path}/login`,
@@ -60,12 +61,35 @@ export class AuthController extends BaseController implements IController {
   private registerUser = this.factory.createHandlers(
     validate("form", UserDTO),
     async (c) => {
-      const validatedUser = c.req.valid("form");
-      const createdUser = await this._authService.createUser(validatedUser);
-      if (!createdUser) return c.redirect("/auth/register");
-      return c.redirect("/auth/login");
+      try {
+        const validatedUser = c.req.valid("form");
+
+        // Attempt to create the user
+        const createdUser = await this._authService.createUser(validatedUser);
+
+        if (!createdUser) {
+          console.error("User registration failed");
+          return c.html(
+            <Layout>
+              <Register />
+              <p className="text-red-600">Registration failed. Try again.</p>
+            </Layout>
+          );
+        }
+
+        return c.redirect("/auth/login");
+      } catch (error) {
+        console.error("Error during registration:", error);
+        return c.html(
+          <Layout>
+            <Register />
+            <p className="text-red-600">User already exists or invalid data.</p>
+          </Layout>
+        );
+      }
     }
   );
+
   /*
    *********************
    *   Login Routes    *
@@ -82,36 +106,68 @@ export class AuthController extends BaseController implements IController {
   private loginUser = this.factory.createHandlers(
     validate("form", UserDTO),
     async (c) => {
-      const validatedUser = c.req.valid("form");
-      const foundUser = await this._authService.loginUser(validatedUser);
-      const sessionId = randomUUID(); // Generate unique session ID
-      _sessionStore.set(sessionId, foundUser.email);
-      setCookie(c, "session", sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 30 * 60, // 30min
-        path: "/",
-      });
-      return c.redirect("/");
+      try {
+        const validatedUser = c.req.valid("form");
+
+        // Authenticate user
+        const foundUser = await this._authService.loginUser(validatedUser);
+        if (!foundUser) {
+          console.error("Login failed: Invalid credentials");
+          return c.html(
+            <Layout>
+              <Login />
+              <p className="text-red-600">Invalid email or password.</p>
+            </Layout>
+          );
+        }
+
+        // Generate a session ID
+        const sessionId = randomUUID();
+        _sessionStore.set(sessionId, foundUser.email);
+
+        // Set secure session cookie
+        setCookie(c, "session", sessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 30 * 60, // 30 minutes
+          path: "/",
+        });
+
+        return c.redirect("/");
+      } catch (error) {
+        console.error("Error during login:", error);
+        return c.html(
+          <Layout>
+            <Login />
+            <p className="text-red-600">Invalid credentials. Please try again.</p>
+          </Layout>
+        );
+      }
     }
   );
 
   private logoutUser = this.factory.createHandlers(async (c) => {
-    const sessionId = getCookie(c, "session");
-    if (sessionId) {
-      _sessionStore.delete(sessionId); // Remove session from memory
+    try {
+      const sessionId = getCookie(c, "session");
+      if (sessionId) {
+        _sessionStore.delete(sessionId);
+      }
+
+      // Clear session cookie
+      setCookie(c, "session", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 0, // Expire immediately
+        path: "/",
+      });
+
+      return c.redirect("/auth/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      return c.redirect("/auth/login");
     }
-
-    // Clear the session cookie
-    setCookie(c, "session", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 0, // Expire immediately
-      path: "/",
-    });
-
-    return c.redirect("/auth/login");
   });
+
   /*
    *********************
    *  Profile Routes   *
