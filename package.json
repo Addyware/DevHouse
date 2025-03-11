@@ -12,6 +12,10 @@
     "@nestjs/core": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
     "@tailwindcss/vite": "^4.0.0-beta.8",
+<<<<<<< HEAD
+=======
+    "bcrypt": "^5.1.1",
+>>>>>>> feature/password-hashing
     "dotenv": "^16.4.7",
     "hono": "^4.5.10",
 <<<<<<< HEAD
@@ -25,6 +29,7 @@
   "devDependencies": {
     "@hono/vite-build": "^1.1.0",
     "@hono/vite-dev-server": "^0.17.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.17",
     "vite": "^5.4.2"
   }

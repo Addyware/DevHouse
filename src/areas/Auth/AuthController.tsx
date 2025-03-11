@@ -29,10 +29,14 @@ export class AuthController extends BaseController implements IController {
       forwardAuthMiddleware,
       ...this.showRegisterPage
     );
+<<<<<<< HEAD
     this.router.post(
       `${this.path}/register`,
       forwardAuthMiddleware,
        ...this.registerUser);
+=======
+    this.router.post(`${this.path}/register`, ...this.registerUser);
+>>>>>>> feature/password-hashing
 
     // Login Routes
     this.router.get(
@@ -69,6 +73,7 @@ export class AuthController extends BaseController implements IController {
   private registerUser = this.factory.createHandlers(
     validate("form", UserDTO),
     async (c) => {
+<<<<<<< HEAD
       const validatedUser = c.req.valid("form");
 
       try {
@@ -80,6 +85,37 @@ export class AuthController extends BaseController implements IController {
     }
   );
   
+=======
+      try {
+        const validatedUser = c.req.valid("form");
+
+        // Attempt to create the user
+        const createdUser = await this._authService.createUser(validatedUser);
+
+        if (!createdUser) {
+          console.error("User registration failed");
+          return c.html(
+            <Layout>
+              <Register />
+              <p className="text-red-600">Registration failed. Try again.</p>
+            </Layout>
+          );
+        }
+
+        return c.redirect("/auth/login");
+      } catch (error) {
+        console.error("Error during registration:", error);
+        return c.html(
+          <Layout>
+            <Register />
+            <p className="text-red-600">User already exists or invalid data.</p>
+          </Layout>
+        );
+      }
+    }
+  );
+
+>>>>>>> feature/password-hashing
   /*
    *********************
    *   Login Routes    *
@@ -105,6 +141,7 @@ export class AuthController extends BaseController implements IController {
       }
     }),
     async (c) => {
+<<<<<<< HEAD
 <<<<<<< HEAD
       const validatedUser = c.req.valid("form");
       
@@ -150,26 +187,77 @@ export class AuthController extends BaseController implements IController {
         }
       }
 >>>>>>> login-error
+=======
+      try {
+        const validatedUser = c.req.valid("form");
+
+        // Authenticate user
+        const foundUser = await this._authService.loginUser(validatedUser);
+        if (!foundUser) {
+          console.error("Login failed: Invalid credentials");
+          return c.html(
+            <Layout>
+              <Login />
+              <p className="text-red-600">Invalid email or password.</p>
+            </Layout>
+          );
+        }
+
+        // Generate a session ID
+        const sessionId = randomUUID();
+        _sessionStore.set(sessionId, foundUser.email);
+
+        // Set secure session cookie
+        setCookie(c, "session", sessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 30 * 60, // 30 minutes
+          path: "/",
+        });
+
+        return c.redirect("/");
+      } catch (error) {
+        console.error("Error during login:", error);
+        return c.html(
+          <Layout>
+            <Login />
+            <p className="text-red-600">Invalid credentials. Please try again.</p>
+          </Layout>
+        );
+      }
+>>>>>>> feature/password-hashing
     }
   }
   );
 
   private logoutUser = this.factory.createHandlers(async (c) => {
+<<<<<<< HEAD
     const sessionId = getCookie(c, "session");
     if (sessionId) {
       await _sessionStore.delete(sessionId); // Remove session from memory
+=======
+    try {
+      const sessionId = getCookie(c, "session");
+      if (sessionId) {
+        _sessionStore.delete(sessionId);
+      }
+
+      // Clear session cookie
+      setCookie(c, "session", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 0, // Expire immediately
+        path: "/",
+      });
+
+      return c.redirect("/auth/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      return c.redirect("/auth/login");
+>>>>>>> feature/password-hashing
     }
-
-    // Clear the session cookie
-    setCookie(c, "session", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 0, // Expire immediately
-      path: "/",
-    });
-
-    return c.redirect("/auth/login");
   });
+
   /*
    *********************
    *  Profile Routes   *

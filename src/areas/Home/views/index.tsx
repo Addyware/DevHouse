@@ -71,7 +71,7 @@ export function Index() {
           <div className="text-center">
             <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
               Connect with developers{" "}
-              <span className="text-indigo-600">worldwide</span>
+              <span className="text-red-600">worldwide</span>
             </h1>
             <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
               Share your code, discuss projects, and build your network in a
