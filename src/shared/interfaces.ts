@@ -1,8 +1,9 @@
+import { Hono } from "hono";
 import { IPost, IUser, PostCreate, PostDelete, postDeleteSchema } from "./dtos";
 
 export interface IController {
+  router: any;
   path: string;
-  // router: Hono; // TODO: DELETE THIS (NO LONGER NECESSARY)
 }
 
 export interface IAuthService {

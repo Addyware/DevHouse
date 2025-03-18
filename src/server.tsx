@@ -73,9 +73,11 @@ export class App {
       return notFound(c);
     });
   }
-
+  
   private initControllers(controllers: IController[]) {
     controllers.forEach((controller) => {
+      console.log("🔍 Debugging Controller:", controller);
+      console.log("🛠️ Controller Router Type:", typeof controller.router);
       this._app.route("/", controller.router);
     });
   }

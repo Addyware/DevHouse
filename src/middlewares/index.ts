@@ -26,7 +26,7 @@ export const errorHandler = (c: Context, status: number = 401) => {
       message: c.error?.message,
       stack: process.env.NODE_ENV === "production" ? null : c.error?.stack,
     },
-    status as StatusCode
+    // status as StatusCode
   );
 };
 
@@ -45,7 +45,7 @@ export const notFound = (c: Context) => {
 // so let's just move along...(feel free to improve it, it's just a sample)
 export const deserializeUser = createMiddleware(async (c, next) => {
   const session = c.get("session");
-  const userId = session.get("user");
+  const userId = session.get("userId");
   if (!userId) {
     c.set("user", null);
   } else {

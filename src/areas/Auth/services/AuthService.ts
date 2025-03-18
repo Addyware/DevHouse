@@ -10,20 +10,16 @@ export class AuthService implements IAuthService {
     });
 
     if (!userExists) {
-      const createdUser = await db.user.create({ data: user });
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      const createdUser = await db.user.create({
+        data: { ...user, password: hashedPassword },
+      });
       return createdUser;
     } else {
       throw new Error(
         "That email has already been taken. Please try another one."
       );
     }
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-
-    const createdUser = await db.user.create({
-      data: { ...user, password: hashedPassword },
-    });
-
-    return createdUser;
   }
 
   async loginUser(user: { email: string; password: string }): Promise<User> {

@@ -10,8 +10,6 @@ import { Profile } from "./views/Profile";
 import { Header } from "../Posts/views/Header";
 
 export class AuthController extends BaseController implements IController {
-  public router: Hono<{ Bindings: Record<string, unknown> }>;
-
   public readonly path: string = "/auth";
   private _authService: IAuthService;
 
@@ -27,7 +25,7 @@ export class AuthController extends BaseController implements IController {
     this.router.get(
       `${this.path}/register`,
       forwardAuthMiddleware,
-      this.showRegisterPage
+      ...this.showRegisterPage
     );
     this.router.post(`${this.path}/register`, ...this.registerUser);
     // Login Routes
@@ -92,11 +90,12 @@ export class AuthController extends BaseController implements IController {
       const validatedUser = UserDTO.parse(await c.req.parseBody());
       const foundUser = await this._authService.loginUser(validatedUser);
 
-      if (!foundUser) {
-        return c.redirect(`/auth/login?error=${encodeURIComponent("Invalid username or password.")}`);
-      }
+      // if (!foundUser) {
+      //   return c.redirect(`/auth/login?error=${encodeURIComponent("Invalid username or password.")}`);
+      // }
 
       const session = c.get("session");
+      session.get("userId")
       session.set("userId", foundUser.id!);
       return c.redirect("/posts");
     } catch (err) {
@@ -111,7 +110,7 @@ export class AuthController extends BaseController implements IController {
       );
     }
   });
-
+  //(req, res) = (c) stands for contest
   private logoutUser = this.factory.createHandlers(async (c) => {
     const session = c.get("session");
     session.set("userId", null);
