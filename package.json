@@ -1,0 +1,33 @@
+{
+  "name": "hono-vite-jsx",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node src/middleware/index.ts",
+    "start": "vite",
+    "build": "vite build --mode client && vite build"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.8",
+    "@hono/zod-validator": "^0.4.3",
+    "@prisma/client": "^6.5.0",
+    "@tailwindcss/vite": "^4.0.0-beta.8",
+    "hono": "^4.5.10",
+    "hono-sessions": "^0.7.2",
+    "hono-sessions-redis": "^1.1.1",
+    "ioredis": "^5.6.0",
+    "tailwindcss": "^4.0.0-beta.8",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@hono/vite-build": "^1.1.0",
+    "@hono/vite-dev-server": "^0.17.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20.11.17",
+    "bcrypt": "^5.1.1",
+    "install": "^0.13.0",
+    "npm": "^11.2.0",
+    "prisma": "^6.5.0",
+    "tsup": "^8.4.0",
+    "vite": "^5.4.2"
+  }
+}
