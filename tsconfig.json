@@ -1,12 +1,25 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "lib": ["esnext"],
+    "baseUrl": "./",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/db/*": ["./src/db/*"]
+    },
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"],
     "strict": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "skipLibCheck": true
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true
   }
 }

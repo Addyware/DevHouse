@@ -1,36 +1,40 @@
-import { promise } from "zod";
-import { db } from "../../../database/fakeDB";
-import { IUser } from "../../../shared/dtos";
+import { User } from "@prisma/client";
+import { db } from "../../../database/client";
 import { IAuthService } from "../../../shared/interfaces";
 
 export class AuthService implements IAuthService {
-  async findUserByEmail(email: string): Promise<IUser | undefined> {
-    return db.find((user) => user.email === email);
-  }
-  
-  async findUserByEmailAndPassword(email: string, password: string): Promise<IUser> {
-    const user = db.find((user) => user.email === email && user.password === password);
-    if (!user) {
-      return Promise.reject(new Error("User not found"));
-    }
-    return Promise.resolve(user);
-  }
-  async createUser(user: IUser): Promise<IUser> {
-    const existingUser = await this.findUserByEmail(user.email);
+  async createUser(user: User): Promise<User> {
+    /*
+     maybe look at or...
+     const userExists = await db.user.findMany({
+      where: {
+        OR: [{ email: user.email }, { username: user.username }],
+      },
+    });
+    */
+    const userWithSameEmailExists = await db.user.findUnique({
+      where: { email: user.email },
+    });
 
-    if (existingUser){
-      throw new Error(`User with email ${user.email} already exists`)
+    const userWithSameUsernameExists = await db.user.findFirst({
+      where: { username: user.username },
+    });
+
+    if (userWithSameUsernameExists || userWithSameEmailExists) {
+      throw new Error(
+        "That email/username has already been taken. Please try another one."
+      );
+    } else {
+      const createdUser = await db.user.create({ data: user });
+      return createdUser;
     }
-    const newUser: IUser = {
-      id: db.length + 1,
-      email: user.email,
-      password: user.password,
-    };
-    db.push(newUser);
-    return newUser
   }
 
-  async loginUser(user: IUser): Promise<IUser> {
-    return await this.findUserByEmailAndPassword(user.email, user.password);
+  async loginUser(user: User): Promise<User> {
+    const foundUser = await db.user.findUnique({
+      where: { email: user.email, password: user.password },
+    });
+    if (!foundUser) throw new Error("User not found");
+    return foundUser;
   }
 }

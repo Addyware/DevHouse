@@ -4,6 +4,7 @@ import { IAuthService } from "../../../shared/interfaces";
 
 export class PostsService implements IAuthService {
   findUserByEmail(email: String): Promise<IUser> {
+    console.log("test");
     throw new Error("Method not implemented.");
   }
   findUserByEmailAndPassword(email: string, password: string): Promise<IUser> {

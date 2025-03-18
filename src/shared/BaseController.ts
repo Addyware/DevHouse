@@ -1,13 +1,20 @@
-import { Hono } from "hono";
+import { User } from "@prisma/client";
+import { Session } from "hono-sessions";
 import { createFactory } from "hono/factory";
 
+type SessionDataTypes = {
+  userId: number | null;
+};
+type Env = {
+  Variables: {
+    user: User;
+    session: Session<SessionDataTypes>;
+  };
+};
 export abstract class BaseController {
-  public router: Hono;
-  public factory = createFactory();
-  public path: string;
-
-  constructor(path: string) {
-    this.path = path;
-    this.router = new Hono({ strict: false });
+  public router;
+  public factory = createFactory<Env>();
+  constructor() {
+    this.router = this.factory.createApp();
   }
 }

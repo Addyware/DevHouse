@@ -4,7 +4,7 @@ import { Post } from "./Post";
 type Props = {
   posts: TPosts;
 };
-export function Index(props: Props) {
+export function Index({ posts }: Props) {
   return (
     <div className="min-h-screen">
       <main className="max-w-2xl mx-auto">
@@ -39,7 +39,7 @@ export function Index(props: Props) {
         </div>
 
         <div className="mt-4 space-y-4">
-          {props.posts.map((p) => {
+          {posts.map((p) => {
             return <Post post={p} />;
           })}
         </div>

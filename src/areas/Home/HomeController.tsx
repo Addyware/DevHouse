@@ -8,7 +8,7 @@ export class HomeController extends BaseController implements IController {
   public readonly path: string = "/";
 
   constructor() {
-    super();
+    super(); // BaseController.constructor()
     this.initializeRoutes();
   }
 
@@ -26,11 +26,11 @@ export class HomeController extends BaseController implements IController {
    *  Home Routes  *
    *********************
    */
-  private showHomePage = this.factory.createHandlers((c) =>
-    c.html(
+  private showHomePage = this.factory.createHandlers((c) => {
+    return c.html(
       <Layout>
         <Index />
       </Layout>
-    )
-  );
+    );
+  });
 }

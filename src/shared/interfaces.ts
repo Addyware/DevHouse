@@ -1,13 +1,11 @@
-import { Hono } from "hono";
-import { IPost, IUser, PostCreate, PostDelete, postDeleteSchema } from "./dtos";
+import { IPost, IUser, PostCreate, PostDelete } from "./dtos";
 
 export interface IController {
   path: string;
-  router: Hono;
+  router: any; // TODO: DELETE THIS (NO LONGER NECESSARY)
 }
 
 export interface IAuthService {
-  findUserByEmail(email: string): Promise<IUser | undefined>;
   createUser(user: IUser): Promise<IUser>;
   loginUser(user: IUser): Promise<IUser>;
 }
