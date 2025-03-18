@@ -4,6 +4,10 @@ import { z } from "zod";
 export const UserDTO = z.object({
   id: z.number().optional(),
   email: z.string().email(),
+  username: z
+    .string()
+    .min(1, "Username must be at least 1 character")
+    .optional(),
   password: z.string().min(6, "Password must be at least 6 characters"),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),

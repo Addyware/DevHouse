@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
         jsxImportSource: "hono/jsx/dom", // Optimized for hono/jsx/dom
       },
       build: {
+        sourcemap: "hidden",
         rollupOptions: {
           input: "./src/client.tsx",
           output: {

@@ -41,8 +41,10 @@ export class PostController extends BaseController implements IController {
    *********************
    */
   private showPostsPage = this.factory.createHandlers(async (c) => {
+    console.log("The currently logged in User:");
+    const user = c.get("user");
+    console.log(user);
     const posts = await this._postsService.getPosts();
-
     return c.render(
       <Layout>
         <Header />

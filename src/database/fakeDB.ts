@@ -4,7 +4,7 @@ export const db: IUser[] = [
   {
     id: 1,
     email: "john123@gmail.com",
-    password: "$2a$10$GbvWHEQbry59MndVt5x6BuNYyhvdcCSzZJY3K7IPo2pHLrFzOGArC",
+    password: "123456",
   },
 ];
 
