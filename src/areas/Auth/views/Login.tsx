@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import { Error } from "./ErrorBox";
+=======
+>>>>>>> sprint2-authservice
 type Props = {
   error: string;
 };
+<<<<<<< HEAD
 export function Login({ error }: Props) {
+=======
+
+export function Login({ errorMessage = "" }: Props) {
+>>>>>>> sprint2-authservice
   return (
     <div class="bg-white font-family-karla h-screen">
       <div class="w-full flex flex-wrap">
@@ -13,18 +21,30 @@ export function Login({ error }: Props) {
             </a>
           </div>
 
+<<<<<<< HEAD
           <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
             {error && <Error>{error}</Error>}
             <p class="text-center text-3xl">Welcome back.</p>
+=======
+          <div className="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
+            <p className="text-center text-3xl">Welcome back.</p>
+            {errorMessage && <p className="text-center text-red-600">{errorMessage}</p>}
+            
+>>>>>>> sprint2-authservice
             <form
               class="flex flex-col pt-3 md:pt-8"
               method="post"
               action="/auth/login"
             >
+<<<<<<< HEAD
               <div class="flex flex-col pt-4">
                 <label for="email" class="text-lg">
                   Email
                 </label>
+=======
+              <div className="flex flex-col pt-4">
+                <label htmlFor="email" className="text-lg">Email</label>
+>>>>>>> sprint2-authservice
                 <input
                   type="email"
                   required
@@ -35,10 +55,15 @@ export function Login({ error }: Props) {
                 />
               </div>
 
+<<<<<<< HEAD
               <div class="flex flex-col pt-4">
                 <label for="password" class="text-lg">
                   Password
                 </label>
+=======
+              <div className="flex flex-col pt-4">
+                <label htmlFor="password" className="text-lg">Password</label>
+>>>>>>> sprint2-authservice
                 <input
                   type="password"
                   id="password"
