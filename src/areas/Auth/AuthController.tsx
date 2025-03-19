@@ -7,13 +7,11 @@ import { UserDTO } from "../../shared/dtos";
 import { IAuthService, IController } from "../../shared/interfaces";
 import { Layout } from "../../shared/Layout";
 import { Login, Register } from "./views";
-
 import { getCookie, setCookie } from "hono/cookie";
 import { Header } from "../Posts/views/Header";
 import { Profile } from "./views/Profile";
 
 export class AuthController extends BaseController implements IController {
-  // public readonly path: string = "/auth";
   private _authService: IAuthService;
 
   constructor(service: IAuthService) {
@@ -24,37 +22,18 @@ export class AuthController extends BaseController implements IController {
 
   private initializeRoutes() {
     // Register Routes
-    this.router.get(
-      `${this.path}/register`,
-      forwardAuthMiddleware,
-      ...this.showRegisterPage
-    );
-<<<<<<< HEAD
-    this.router.post(
-      `${this.path}/register`,
-      forwardAuthMiddleware,
-       ...this.registerUser);
-=======
-    this.router.post(`${this.path}/register`, ...this.registerUser);
->>>>>>> feature/password-hashing
+    this.router.get(`${this.path}/register`, forwardAuthMiddleware, ...this.showRegisterPage);
+    this.router.post(`${this.path}/register`, forwardAuthMiddleware, ...this.registerUser);
 
     // Login Routes
-    this.router.get(
-      `${this.path}/login`,
-      forwardAuthMiddleware,
-      ...this.showLoginPage
-    );
-    this.router.post(
-      `${this.path}/login`,
-      forwardAuthMiddleware,
-       ...this.loginUser);
+    this.router.get(`${this.path}/login`, forwardAuthMiddleware, ...this.showLoginPage);
+    this.router.post(`${this.path}/login`, forwardAuthMiddleware, ...this.loginUser);
 
+    // Logout Route
     this.router.get(`${this.path}/logout`, ...this.logoutUser);
-    this.router.get(
-      `${this.path}/profile`,
-      authMiddleware,
-      ...this.showProfile
-    );
+
+    // Profile Route
+    this.router.get(`${this.path}/profile`, authMiddleware, ...this.showProfile);
   }
 
   /*
@@ -73,19 +52,6 @@ export class AuthController extends BaseController implements IController {
   private registerUser = this.factory.createHandlers(
     validate("form", UserDTO),
     async (c) => {
-<<<<<<< HEAD
-      const validatedUser = c.req.valid("form");
-
-      try {
-        const newUser = await this._authService.createUser(validatedUser);
-        return c.redirect("/auth/login");
-      } catch (error){
-        throw new Error()
-      }
-    }
-  );
-  
-=======
       try {
         const validatedUser = c.req.valid("form");
 
@@ -96,7 +62,7 @@ export class AuthController extends BaseController implements IController {
           console.error("User registration failed");
           return c.html(
             <Layout>
-              <Register />
+              <Register error=""/>
               <p className="text-red-600">Registration failed. Try again.</p>
             </Layout>
           );
@@ -107,7 +73,7 @@ export class AuthController extends BaseController implements IController {
         console.error("Error during registration:", error);
         return c.html(
           <Layout>
-            <Register />
+            <Register error="Registration failed. Try again." />
             <p className="text-red-600">User already exists or invalid data.</p>
           </Layout>
         );
@@ -115,7 +81,6 @@ export class AuthController extends BaseController implements IController {
     }
   );
 
->>>>>>> feature/password-hashing
   /*
    *********************
    *   Login Routes    *
@@ -132,62 +97,15 @@ export class AuthController extends BaseController implements IController {
   private loginUser = this.factory.createHandlers(
     validate("form", UserDTO, (result, c) => {
       if (!result.success) {
-        const errorMessage = result.error.errors?.[0].message
-          return c.render(
-            <Layout>
-              <Login errorMessage={errorMessage}/>
-            </Layout>
-          )
+        const errorMessage = result.error.errors?.[0]?.message;
+        return c.render(
+          <Layout>
+            <Login errorMessage="Invalid email or password." />
+          </Layout>
+        );
       }
     }),
     async (c) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      const validatedUser = c.req.valid("form");
-      
-      try {
-        const foundUser = await this._authService.loginUser(validatedUser);
-  
-        const sessionId = randomUUID(); // Generate unique session ID
-        _sessionStore.set(sessionId, foundUser.email);
-=======
-      try {
-        const validatedUser = c.req.valid("form");
-        const foundUser = await this._authService.loginUser(validatedUser);
-        const sessionId = randomUUID(); // Generate unique session ID
-        await _sessionStore.set(sessionId, foundUser.email);
->>>>>>> login-error
-        setCookie(c, "session", sessionId, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 30 * 60, // 30min
-          path: "/",
-        });
-<<<<<<< HEAD
-      return c.redirect("/");
-    } catch (error) {
-      console.error("Login Error:", error);
-      return c.html(
-        <Layout>
-          <Login />
-        </Layout>
-      );
-=======
-        return c.redirect("/");
-      } catch (err) {
-        if(err instanceof Error && err.message === "User not found"){
-          const errorMessage = "Invalid Login Credentials. Please try again"
-          return c.render(
-            <Layout>
-              <Login errorMessage={errorMessage}/>
-            </Layout>
-          )
-        } else {
-          throw err
-        }
-      }
->>>>>>> login-error
-=======
       try {
         const validatedUser = c.req.valid("form");
 
@@ -225,17 +143,15 @@ export class AuthController extends BaseController implements IController {
           </Layout>
         );
       }
->>>>>>> feature/password-hashing
     }
-  }
   );
 
+  /*
+   *********************
+   *   Logout Route    *
+   *********************
+   */
   private logoutUser = this.factory.createHandlers(async (c) => {
-<<<<<<< HEAD
-    const sessionId = getCookie(c, "session");
-    if (sessionId) {
-      await _sessionStore.delete(sessionId); // Remove session from memory
-=======
     try {
       const sessionId = getCookie(c, "session");
       if (sessionId) {
@@ -254,7 +170,6 @@ export class AuthController extends BaseController implements IController {
     } catch (error) {
       console.error("Logout error:", error);
       return c.redirect("/auth/login");
->>>>>>> feature/password-hashing
     }
   });
 

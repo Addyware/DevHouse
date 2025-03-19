@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-export function Login({error}: {error?: string}) {
-=======
 type Props = {
   errorMessage?: string;
 };
 
-export function Login(props: Props) {
->>>>>>> login-error
+export function Login({ errorMessage = "" }: Props) {
   return (
     <div className="bg-white font-family-karla h-screen">
       <div className="w-full flex flex-wrap">
@@ -17,23 +13,17 @@ export function Login(props: Props) {
             </a>
           </div>
 
-<<<<<<< HEAD
-          <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-            <p class="text-center text-3xl">Welcome back.</p>
-            <p class="text-center text-red-600">{props.errorMessage}</p>
-=======
           <div className="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
             <p className="text-center text-3xl">Welcome back.</p>
->>>>>>> feature/password-hashing
+            {errorMessage && <p className="text-center text-red-600">{errorMessage}</p>}
+            
             <form
               className="flex flex-col pt-3 md:pt-8"
               method="post"
               action="/auth/login"
             >
               <div className="flex flex-col pt-4">
-                <label htmlFor="email" className="text-lg">
-                  Email
-                </label>
+                <label htmlFor="email" className="text-lg">Email</label>
                 <input
                   type="email"
                   id="email"
@@ -46,9 +36,7 @@ export function Login(props: Props) {
               </div>
 
               <div className="flex flex-col pt-4">
-                <label htmlFor="password" className="text-lg">
-                  Password
-                </label>
+                <label htmlFor="password" className="text-lg">Password</label>
                 <input
                   type="password"
                   id="password"

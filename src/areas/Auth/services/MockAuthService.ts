@@ -6,32 +6,19 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
-export class MockAuthService implements IAuthService {
-<<<<<<< HEAD
-  async findUserByEmail(email: string): Promise<IUser | undefined> {
-    return db.find((user)=> user.email === email)
-  }
 
-  private async findUserByEmailAndPassword(
-    email: string,
-    password: string
-  ): Promise<IUser | undefined> {
-    return db.find(
-      (user) => user.email === email && user.password === password
-    );
-  }
-=======
+export class MockAuthService implements IAuthService {
   // Register user with HASHED password
->>>>>>> feature/password-hashing
   async createUser(user: IUser): Promise<IUser> {
     const email = user.email.toLowerCase();
+    
     // Check if user already exists
     const existingUser = await this.findUserByEmail(email);
     if (existingUser) {
       throw new Error("User with this email already exists");
     }
 
-    // HASH BEFORE STORING!!!!!!!
+    // Hash the password before storing
     const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
     const newUser = {
       id: Date.now(),
@@ -61,7 +48,7 @@ export class MockAuthService implements IAuthService {
   }
 
   // Find user by email
-  private async findUserByEmail(email: string): Promise<IUser | undefined> {
+  public async findUserByEmail(email: string): Promise<IUser | undefined> {
     return db.find((user) => user.email.toLowerCase() === email.toLowerCase());
   }
 }

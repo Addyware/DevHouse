@@ -3,7 +3,9 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "vite build --mode client && vite build"
+    "build": "vite build --mode client && vite build",
+    "dev": "tsx src/server.tsx"
+
   },
   "dependencies": {
     "@hono/node-server": "^1.12.2",
@@ -11,19 +13,15 @@
     "@nestjs/common": "^11.0.11",
     "@nestjs/core": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
+    "@prisma/client": "^6.5.0",
     "@tailwindcss/vite": "^4.0.0-beta.8",
-<<<<<<< HEAD
-=======
     "bcrypt": "^5.1.1",
->>>>>>> feature/password-hashing
     "dotenv": "^16.4.7",
+    "express": "^5.0.1",
     "hono": "^4.5.10",
-<<<<<<< HEAD
     "ioredis": "^5.5.0",
-=======
-    "ioredis": "^5.6.0",
->>>>>>> login-error
     "tailwindcss": "^4.0.0-beta.8",
+    "tsx": "^4.19.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -31,6 +29,7 @@
     "@hono/vite-dev-server": "^0.17.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.17",
+    "ts-node": "^10.9.2",
     "vite": "^5.4.2"
   }
 }
