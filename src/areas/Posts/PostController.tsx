@@ -1,10 +1,10 @@
+import { authMiddleware } from "../../middlewares";
+import { BaseController } from "../../shared/BaseController";
 import { Layout } from "../../shared/Layout";
 import { IController, IPostsService } from "../../shared/interfaces";
-import { BaseController } from "../../shared/BaseController";
-import { Index } from "./views/index";
-import { authMiddleware } from "../../middlewares";
-import { Header } from "./views/Header";
 import { EditPost } from "./views/EditPost";
+import { Header } from "./views/Header";
+import { Index } from "./views/index";
 
 export class PostController extends BaseController implements IController {
   public readonly path: string = "/posts";
@@ -41,9 +41,7 @@ export class PostController extends BaseController implements IController {
    *********************
    */
   private showPostsPage = this.factory.createHandlers(async (c) => {
-    console.log("The currently logged in User:");
     const user = c.get("user");
-    console.log(user);
     const posts = await this._postsService.getPosts();
     return c.render(
       <Layout>

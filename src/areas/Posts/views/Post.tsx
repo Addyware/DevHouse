@@ -1,6 +1,7 @@
-import { TPost } from "../../../shared/dtos";
+import { PostAndUser } from "../services/PostsService";
 
-type Props = { post: TPost };
+type Props = { post: PostAndUser };
+
 export function Post({ post }: Props) {
   return (
     <div
@@ -11,23 +12,23 @@ export function Post({ post }: Props) {
         <div className="flex-shrink-0">
           <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
             <img
-              src={post.avatar}
-              alt={post.author}
+              src={post.user.avatar || "https://morgancarter.com.au/assets/images/blog/encouraging-upload/thumbnail.png"}
+              alt={post.user.username}
               className="w-full h-full object-cover"
             />
           </div>
         </div>
         <div className="flex-grow">
           <div className="flex items-center space-x-1">
-            <span className="font-bold">{post.author}</span>
+            <span className="font-bold">{post.user.username}</span>
             <span className="text-gray-500">·</span>
           </div>
-          <p className="mt-1">{post.text}</p>
+          <p className="mt-1">{post.content}</p>
           <pre>
-            <code class="mt-1 language-js">{post.code}</code>
+            <code class="mt-1 language-js">{post.content}</code>
           </pre>
           <div className="mt-3 flex gap-3 items-center">
-            <form action={`/posts/like/${post.id}`} method="post">
+            {/* <form action={`/posts/like/${post.id}`} method="post">
               <input type="hidden" name="like" value={post.liked ? -1 : +1} />
               <button
                 type="submit"
@@ -70,7 +71,7 @@ export function Post({ post }: Props) {
                   {post.likes}
                 </span>
               </button>
-            </form>
+            </form> */}
             <a
               href={`/posts/edit/${post.id}`}
               class="text-gray-500 cursor-pointer p-1.5 rounded-full hover:bg-blue-100"

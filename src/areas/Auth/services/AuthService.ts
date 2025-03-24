@@ -12,21 +12,27 @@ export class AuthService implements IAuthService {
       },
     });
     */
-    const userWithSameEmailExists = await db.user.findUnique({
-      where: { email: user.email },
-    });
+    try {
+      const userWithSameEmailExists = await db.user.findUnique({
+        where: { email: user.email },
+      });
 
-    const userWithSameUsernameExists = await db.user.findFirst({
-      where: { username: user.username },
-    });
+      const userWithSameUsernameExists = await db.user.findFirst({
+        where: { username: user.username },
+      });
 
-    if (userWithSameUsernameExists || userWithSameEmailExists) {
-      throw new Error(
-        "That email/username has already been taken. Please try another one."
-      );
-    } else {
-      const createdUser = await db.user.create({ data: user });
-      return createdUser;
+      if (userWithSameUsernameExists || userWithSameEmailExists) {
+        throw new Error(
+          "That email/username has already been taken. Please try another one."
+        );
+      } else {
+        const createdUser = await db.user.create({ data: user });
+        return createdUser;
+      }
+    } catch (error) {
+      console.log("error");
+      console.log(user);
+      return user;
     }
   }
 

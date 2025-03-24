@@ -1,8 +1,9 @@
-import { IPost, TPosts } from "../../../shared/dtos";
+
+import { PostAndUser } from "../services/PostsService";
 import { Post } from "./Post";
 
 type Props = {
-  posts: TPosts;
+  posts: PostAndUser[];
 };
 export function Index({ posts }: Props) {
   return (
@@ -40,7 +41,7 @@ export function Index({ posts }: Props) {
 
         <div className="mt-4 space-y-4">
           {posts.map((p) => {
-            return <Post post={p} />;
+            return <Post post={p} />
           })}
         </div>
       </main>

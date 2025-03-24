@@ -1,4 +1,11 @@
-import { IPost, IUser, PostCreate, PostDelete } from "./dtos";
+import { PostAndUser } from "@/areas/Posts/services/PostsService";
+import { Post, User } from "@prisma/client";
+import {
+  PostCreate,
+  PostDelete,
+  userLoginType,
+  userRegisterType,
+} from "./dtos";
 
 export interface IController {
   path: string;
@@ -6,12 +13,12 @@ export interface IController {
 }
 
 export interface IAuthService {
-  createUser(user: IUser): Promise<IUser>;
-  loginUser(user: IUser): Promise<IUser>;
+  createUser(user: userRegisterType): Promise<User>;
+  loginUser(user: userLoginType): Promise<User>;
 }
 
 export interface IPostsService {
-  createPost(post: PostCreate, userId: number): Promise<IPost>;
+  createPost(post: PostCreate, userId: number): Promise<Post>;
   deletePost(postId: PostDelete): Promise<void>;
-  getPosts(): Promise<IPost[]>;
+  getPosts(): Promise<PostAndUser[]>;
 }

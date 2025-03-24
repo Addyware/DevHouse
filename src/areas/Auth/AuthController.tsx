@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { authMiddleware, forwardAuthMiddleware } from "../../middlewares";
 import { BaseController } from "../../shared/BaseController";
-import { UserDTO } from "../../shared/dtos";
+import { userLoginDTO, userRegisterDTO } from "../../shared/dtos";
 import { IAuthService, IController } from "../../shared/interfaces";
 import { Layout } from "../../shared/Layout";
 import { Header } from "../Posts/views/Header";
@@ -55,13 +55,12 @@ export class AuthController extends BaseController implements IController {
     );
   });
 
+  // DTO means: DATA TRANSFER OBJECT
   private registerUser = this.factory.createHandlers(async (c) => {
-    const { error, data: validatedUser } = UserDTO.safeParse(
-      await c.req.parseBody()
-    );
-    if (error) return c.redirect(`/auth/register?error=${encodeURIComponent(error.message)}`);
     try {
-      await this._authService.createUser(validatedUser);
+      const body = await c.req.parseBody();
+      const user = userRegisterDTO.parse(body);
+      await this._authService.createUser(user);
     } catch (error: any) {
       return c.redirect(
         `/auth/register?error=${encodeURIComponent(error.message)}`
@@ -85,17 +84,17 @@ export class AuthController extends BaseController implements IController {
 
   private loginUser = this.factory.createHandlers(async (c) => {
     try {
-      const validatedUser = UserDTO.parse(await c.req.parseBody());
+      const body = await c.req.parseBody(); // req.body
+      const validatedUser = userLoginDTO.parse(body);
       const foundUser = await this._authService.loginUser(validatedUser);
-      console.log(foundUser);
       const session = c.get("session");
       session.set("userId", foundUser.id!);
-      console.log("The sesson", session);
       return c.redirect("/posts");
     } catch (err) {
       let errorMessage = "";
       if (err instanceof z.ZodError) {
         errorMessage = err.issues[0].message;
+        console.log(errorMessage);
       } else if (err instanceof Error) {
         errorMessage = err.message;
       }

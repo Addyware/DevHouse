@@ -37,7 +37,7 @@ export class App {
       "*",
       sessionMiddleware({
         store: this._store,
-        encryptionKey: "password_at_least_32_characters_long",
+        encryptionKey: "password_at_least_32_characters_long", // digital signature
         expireAfterSeconds: 60 * 60 * 24 * 2, // 2 days
         cookieOptions: {
           sameSite: "Lax", // Recommended for basic CSRF protection in modern browsers

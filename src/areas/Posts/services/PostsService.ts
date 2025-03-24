@@ -1,20 +1,33 @@
-import { db } from "../../../database/fakeDB";
-import { IUser } from "../../../shared/dtos";
-import { IAuthService } from "../../../shared/interfaces";
+import { PostCreate, PostDelete } from "@/shared/dtos";
+import { Post } from "@prisma/client";
+import { db } from "../../../database/client";
+import { IPostsService } from "../../../shared/interfaces";
 
-export class PostsService implements IAuthService {
-  findUserByEmail(email: String): Promise<IUser> {
-    console.log("test");
+export type PostAndUser = {
+  user: {
+    id: number;
+    email: string;
+    password: string;
+    username: string;
+    avatar: string | null;
+  };
+} & {
+  id: number;
+  content: string;
+  userId: number;
+};
+export class PostsService implements IPostsService {
+  async createPost(post: PostCreate, userId: number): Promise<Post> {
     throw new Error("Method not implemented.");
   }
-  findUserByEmailAndPassword(email: string, password: string): Promise<IUser> {
+  async deletePost(postId: PostDelete): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  createUser(user: IUser): Promise<IUser> {
-    throw new Error("Method not implemented.");
-  }
-
-  loginUser(user: IUser): Promise<IUser> {
-    throw new Error("Method not implemented.");
+  async getPosts(): Promise<PostAndUser[]> {
+    // JOIN
+    const posts = await db.post.findMany({
+      include: { user: true },
+    });
+    return posts;
   }
 }
