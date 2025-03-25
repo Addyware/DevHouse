@@ -10,10 +10,19 @@ export const UserDTO = z.object({
   updatedAt: z.string().optional(),
 });
 
+// ✅ Add LoginDTO to allow login with username, email, and password
+export const LoginDTO = z.object({
+  email: z.string().email(),
+  username: z.string().min(1, "Username is required"), // required for Option 2
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+// Unified Post Schema: aligns with Prisma and frontend
 export const PostSchema = z.object({
   id: z.number().optional(),
-  text: z.string().min(1), // min(1) disallows empty strings
-  code: z.string().min(1).optional(),
+  text: z.string().min(1), // what frontend uses
+  content: z.string().optional(), // what DB returns
+  code: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
   userId: z.number().optional(),
@@ -25,10 +34,10 @@ export const PostSchema = z.object({
 
 export const PostsSchema = z.array(PostSchema);
 
-// Fixed PostCreate schema by adding optional 'code'
+// Post creation DTO (frontend input)
 export const postCreateSchema = z.object({
-  text: z.string(),
-  code: z.string().optional(), // here it is
+  text: z.string(),               // frontend input
+  code: z.string().optional(),
 });
 
 export const postUpdateSchema = z.object({
@@ -40,6 +49,7 @@ export const postDeleteSchema = z.object({
   id: z.number(),
 });
 
+// Type Inference
 export type IUser = z.infer<typeof UserDTO>;
 export type IPost = z.infer<typeof PostSchema>;
 export type TPosts = z.TypeOf<typeof PostsSchema>;
@@ -47,3 +57,6 @@ export type TPost = z.TypeOf<typeof PostSchema>;
 export type PostUpdate = z.TypeOf<typeof postUpdateSchema>;
 export type PostDelete = z.TypeOf<typeof postDeleteSchema>;
 export type PostCreate = z.TypeOf<typeof postCreateSchema>;
+
+// ✅ New Login Type
+export type LoginData = z.infer<typeof LoginDTO>;

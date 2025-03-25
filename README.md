@@ -11,4 +11,6 @@ I worked on the following tasks:
 
 2. `<Error Debugging & Login Troubleshooting>` – Debugged multiple backend and SSR-related issues (PrismaClient is not defined, Cannot read properties of undefined (reading 'parse')).
 
-3. One issue im running into is the logging in session. For some reason when logging in with correct credentials, login page just refreshes and replaces my email with a username but doesnt actually login the session. Need to do more research on this and try to fix it. 
+3. `<Fixed logging in session error>` - Added email + username fields for login, made it work because app was requiring username but field stated email. 
+
+Issue im facing, I implemented editing, deleting and posting posts in the backend, but im having trouble connecting the frontend to the backend when requests are being sent!

@@ -1,7 +1,9 @@
 import { Error } from "./ErrorBox";
+
 type Props = {
   error: string;
 };
+
 export function Login({ error }: Props) {
   return (
     <div class="bg-white font-family-karla h-screen">
@@ -22,6 +24,20 @@ export function Login({ error }: Props) {
               action="/auth/login"
             >
               <div class="flex flex-col pt-4">
+                <label for="username" class="text-lg">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  required
+                  id="username"
+                  name="username"
+                  placeholder="your_username"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div class="flex flex-col pt-4">
                 <label for="email" class="text-lg">
                   Email
                 </label>
@@ -41,6 +57,7 @@ export function Login({ error }: Props) {
                 </label>
                 <input
                   type="password"
+                  required
                   id="password"
                   name="password"
                   placeholder="Password"
@@ -54,6 +71,7 @@ export function Login({ error }: Props) {
                 class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8 cursor-pointer"
               />
             </form>
+
             <div class="text-center pt-12 pb-12">
               <p>
                 Don't have an account?&nbsp;

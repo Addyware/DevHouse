@@ -54,7 +54,10 @@ export class PostController extends BaseController implements IController {
   });
 
   private editPostPage = this.factory.createHandlers((c) => {
-    const id = c.req.param("id");
+    const idParam = c.req.param("id");
+    if (!idParam) return c.redirect("/posts");
+
+    const id = parseInt(idParam);
     const posts = [
       {
         id: 1,
@@ -81,10 +84,11 @@ export class PostController extends BaseController implements IController {
         time: "5h",
       },
     ];
+
     return c.render(
       <Layout>
         <Header />
-        <EditPost post={posts[parseInt(id)].content} />
+        <EditPost post={posts[id]?.content || "No post found"} />
       </Layout>
     );
   });
