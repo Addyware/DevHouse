@@ -6,7 +6,7 @@ import { prettyJSON } from "hono/pretty-json";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { logger } from "hono/logger";
 import { CookieStore, sessionMiddleware } from "hono-sessions";
-import { RedisStoreAdapter } from "hono-sessions-redis";
+import { RedisStoreAdapter } from "./database/redis";
 import Redis from "ioredis";
 
 export class App {

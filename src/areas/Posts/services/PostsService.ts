@@ -1,20 +1,22 @@
-import { db } from "../../../database/fakeDB";
-import { IUser } from "../../../shared/dtos";
-import { IAuthService } from "../../../shared/interfaces";
+import { db } from "../../../database/client";
+import { IPostsService } from "../../../shared/interfaces";
+import { IPost, PostCreate, PostDelete } from "../../../shared/dtos";
 
-export class PostsService implements IAuthService {
-  findUserByEmail(email: String): Promise<IUser> {
-    console.log("test");
-    throw new Error("Method not implemented.");
-  }
-  findUserByEmailAndPassword(email: string, password: string): Promise<IUser> {
-    throw new Error("Method not implemented.");
-  }
-  createUser(user: IUser): Promise<IUser> {
-    throw new Error("Method not implemented.");
+export class PostsService implements IPostsService {
+  async getPosts(): Promise<IPost[]> {
+    return await db.post.findMany({
+      include: { author: true },
+      orderBy: { createdAt: "desc" },
+    });
   }
 
-  loginUser(user: IUser): Promise<IUser> {
-    throw new Error("Method not implemented.");
+  // Optional: stubbed but not implemented yet
+  async createPost(post: PostCreate, userId: number): Promise<IPost> {
+    throw new Error("createPost not implemented yet.");
+  }
+
+  async deletePost({ id }: PostDelete): Promise<void> {
+    throw new Error("deletePost not implemented yet.");
   }
 }
+

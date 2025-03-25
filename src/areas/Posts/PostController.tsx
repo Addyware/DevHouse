@@ -54,7 +54,7 @@ export class PostController extends BaseController implements IController {
   });
 
   private editPostPage = this.factory.createHandlers((c) => {
-    const id = c.req.param("id");
+    const id = c.req.param("id") || "";
     const posts = [
       {
         id: 1,
