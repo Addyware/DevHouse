@@ -1,20 +1,53 @@
-import { db } from "../../../database/fakeDB";
-import { IUser } from "../../../shared/dtos";
-import { IAuthService } from "../../../shared/interfaces";
+import { db } from "../../../database/client";
+import { IPostsService } from "../../../shared/interfaces";
+import { IPost, PostCreate, PostDelete } from "../../../shared/dtos";
 
-export class PostsService implements IAuthService {
-  findUserByEmail(email: String): Promise<IUser> {
-    console.log("test");
-    throw new Error("Method not implemented.");
-  }
-  findUserByEmailAndPassword(email: string, password: string): Promise<IUser> {
-    throw new Error("Method not implemented.");
-  }
-  createUser(user: IUser): Promise<IUser> {
-    throw new Error("Method not implemented.");
+type RawPostWithUser = {
+  id: number;
+  text: string;
+  code: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
+  user?: {
+    username: string;
+  };
+};
+
+export class PostsService implements IPostsService {
+  async createPost(post: PostCreate, userId: number): Promise<IPost> {
+    const newPost = await db.post.create({
+      data: {
+        text: post.text,
+        code: post.code ?? "", // ✅ No error here
+        userId,
+      },
+    });
+
+    return {
+      ...newPost,
+      author: "Anonymous", // You can update this if real user info is needed
+      liked: false,
+      likes: 0,
+    };
   }
 
-  loginUser(user: IUser): Promise<IUser> {
-    throw new Error("Method not implemented.");
+  async deletePost(postId: PostDelete): Promise<void> {
+    await db.post.delete({ where: { id: postId.id } });
+  }
+
+  async getPosts(): Promise<IPost[]> {
+    const posts = await db.post.findMany({
+      include: {
+        user: true,
+      },
+    });
+
+    return posts.map((post: RawPostWithUser): IPost => ({
+      ...post,
+      author: post.user?.username || "Unknown",
+      liked: false,
+      likes: 0,
+    }));
   }
 }
