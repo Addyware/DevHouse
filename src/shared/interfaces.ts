@@ -8,6 +8,12 @@ export interface IController {
 export interface IAuthService {
   createUser(user: IUser): Promise<IUser>;
   loginUser(user: IUser): Promise<IUser>;
+
+  // user profile method for Sprint 3
+  updateUserProfile(
+    userId: number,
+    updates: { email?: string; username?: string; password?: string }
+  ): Promise<IUser>;
 }
 
 export interface IPostsService {
